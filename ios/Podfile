@@ -17,6 +17,9 @@ end
 target 'ImageViewerApp' do
   config = use_native_modules!
 
+  pod 'RCT-Folly', :podspec => '../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec', :modular_headers => true
+
+
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.

@@ -77,3 +77,44 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+
+
+**Arquitetura do projeto**
+
+📦ImageViewerApp
+├── 📁src
+│   ├── 📁assets
+│   │   └── 📁images
+│   │
+│   ├── 📁components
+│   │   ├── ImageCard.tsx
+│   │   ├── FullImageModal.tsx
+│   │   └── Header.tsx
+│   │
+│   ├── 📁redux
+│   │   ├── store.ts
+│   │   └── 📁slices
+│   │       ├── imagesSlice.ts
+│   │       └── savedSlice.ts
+│   │
+│   ├── 📁screens
+│   │   ├── HomeScreen.tsx
+│   │   ├── GalleryScreen.tsx
+│   │   └── SavedImagesScreen.tsx
+│   │
+│   ├── 📁services
+│   │   └── picsumService.ts
+│   │
+│   ├── 📁storage
+│   │   └── imageStorage.ts
+│   │
+│   ├── 📁navigation
+│   │   └── AppNavigator.tsx
+│   │
+│   ├── 📁utils
+│   │   └── format.ts
+│   │
+│   ├── 📁types
+│   │   └── index.ts
+│   │
+│   └── App.tsx
