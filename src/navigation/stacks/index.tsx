@@ -15,6 +15,7 @@ export const AppStack = () => {
   return (
     <Stack.Navigator  screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={screens.HomeScreen} />
+      <Stack.Screen name="Details" component={screens.DetailsScreen} />
     </Stack.Navigator>
   );
 };

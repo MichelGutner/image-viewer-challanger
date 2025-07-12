@@ -1,6 +1,7 @@
 #import "AppDelegate.h"
 
 #import <React/RCTBundleURLProvider.h>
+#import <RNBackgroundDownloader.h>
 
 @implementation AppDelegate
 
@@ -17,6 +18,11 @@
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
   return [self bundleURL];
+}
+
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)(void))completionHandler
+{
+  [RNBackgroundDownloader setCompletionHandlerWithIdentifier:identifier completionHandler:completionHandler];
 }
 
 - (NSURL *)bundleURL
