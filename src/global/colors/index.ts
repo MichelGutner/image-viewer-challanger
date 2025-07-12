@@ -10,6 +10,8 @@ export const LightTheme: Theme = {
     ...DefaultTheme.colors,
     text: '#11181C',
     background: '#ebf2f4',
+    card: '#FFFFFF',
+    primary: 'rgba(223,223,230, 0.8)',
   },
 };
 
@@ -19,5 +21,7 @@ export const DarkTheme: Theme = {
     ...NavDarkTheme.colors,
     text: '#ECEDEE',
     background: '#151718',
+    card: '#1F2933',
+    primary: 'rgba(223,223,230, 0.0000001)',
   },
 };

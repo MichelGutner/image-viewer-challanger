@@ -3,10 +3,16 @@ import { fetchRandomImage } from '@/services/picturesService';
 import { Image } from '@/storage/realm';
 import { useRealm } from '@realm/react';
 import React, { useEffect, useState } from 'react';
-import { Pressable, Image as RNImage, StyleSheet, View } from 'react-native';
+import {
+  Pressable,
+  Image as RNImage,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import FastImage from 'react-native-fast-image';
-import Animated from 'react-native-reanimated';
+import Animated, { useSharedValue } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
 import { useQuery as useQueryRealm } from '@realm/react';
 
@@ -17,7 +23,9 @@ export const HomeScreen = () => {
   const realm = useRealm();
   const [isLoading, setIsLoading] = useState(false);
   const imagesData = useQueryRealm(Image);
-  console.log("🚀 ~ HomeScreen ~ imagesData:", imagesData)
+  const { height } = useWindowDimensions();
+
+  const heightValue = useSharedValue(height * 0.3);
 
   const { data: imageData, isLoading: queryLoading } = useQuery({
     queryKey: [`-image`],
@@ -66,9 +74,9 @@ export const HomeScreen = () => {
         {currentImage ? (
           <Pressable
             style={{ width: '100%', height: '30%' }}
-            onPress={() =>
-              navigation.navigate('Details', { image: currentImage })
-            }>
+            onPress={() => {
+              navigation.navigate('Details', { image: currentImage });
+            }}>
             <AnimatedImage
               style={styles.image}
               source={{ uri: currentImage.download_url }}
