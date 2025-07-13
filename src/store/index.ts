@@ -1,11 +1,12 @@
-// import { configureStore } from '@reduxjs/toolkit';
-// import imageReducer from './imageSlice';
+// store/index.ts
+import { configureStore } from '@reduxjs/toolkit';
+import downloadReducer from './downloadSlice';
 
-// export const store = configureStore({
-//   reducer: {
-//     images: imageReducer,
-//   },
-// });
+export const store = configureStore({
+  reducer: {
+    download: downloadReducer,
+  },
+});
 
-// export type RootState = ReturnType<typeof store.getState>;
-// export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

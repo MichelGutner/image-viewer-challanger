@@ -1,21 +1,40 @@
-import { useTheme } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
-import Icon  from 'react-native-vector-icons/Feather';
-
+import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { useTheme } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Feather';
 
 type Props = {
+  containerStyle?: ViewStyle;
+  style?: ViewStyle;
   onPress?: () => void;
-  iconName: 'chevron-left' | 'calendar' | 'heartbeat' | 'eye' | 'trash' | 'share' | 'download';
+  iconName:
+    | 'chevron-left'
+    | 'calendar'
+    | 'heartbeat'
+    | 'eye'
+    | 'trash-2'
+    | 'share'
+    | 'download'
+    | 'download-cloud'
+    | 'info'
+    | 'refresh-ccw'
+    | 'shuffle'
+    | 'plus'
+    | 'layers'
+    | 'wifi'
+    | 'wifi-off';
 };
 
-export const Button = ({ onPress, iconName }: Props) => {
+export const Button = ({ onPress, iconName, style, containerStyle }: Props) => {
   const { colors } = useTheme();
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.primary }]}>
-      <TouchableOpacity hitSlop={20} style={styles.button} onPress={onPress}>
-        <Icon name={iconName}  color={colors.notification} size={18} />
+    <View style={[styles.container, containerStyle]}>
+      <TouchableOpacity
+        hitSlop={20}
+        style={[styles.button, style]}
+        onPress={onPress}>
+        <Icon name={iconName} color={colors.notification} size={18} />
       </TouchableOpacity>
     </View>
   );

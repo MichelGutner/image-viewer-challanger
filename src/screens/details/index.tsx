@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
 import { Button, FooterFloatingView } from '@/components';
 import { TRouteParams } from '@/navigation';
-import { Image } from '@/storage/realm';
 import { IUnsplashPhoto } from '@/types/unsplash';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { useQuery } from '@realm/react';
+import { useNavigation, useRoute, useTheme } from '@react-navigation/native';
 import {
   ScrollView,
   StatusBar,
@@ -25,26 +23,37 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Header } from './header';
 import { ImageDescriptions } from './imageInformation';
 import { mockImageInformation } from './mock';
+import { useDownloader } from '@/hooks';
+import { DOWNLOAD_FOLDER } from '@/constants';
+import { useObject, useQuery, useRealm } from '@realm/react';
+import { Image } from '@/storage/realm';
+import { UpdateMode } from 'realm';
 
 const AnimatedImage = Animated.createAnimatedComponent(FastImage);
 
 export const DetailsScreen = () => {
   const navigation = useNavigation<any>();
   const { height, width } = useWindowDimensions();
+  const { colors } = useTheme();
+  const { params } = useRoute<TRouteParams>();
+  const { startDownload, deleteDownload } = useDownloader();
+  const realm = useRealm();
+
+  const image = params?.image;
+  const isDownloaded = useObject(Image, image?.id)?.downloadStatus === 'completed';
+
+  console.log('🚀 ~ DetailsScreen ~ isDownloaded:', isDownloaded);
+
   const maxDragUp = -height * 0.3;
   const maxDragDown = 0;
 
-  const { bottom } = useSafeAreaInsets();
-  const { params } = useRoute<TRouteParams>();
-  const image = params?.image;
-
   if (!image) return null;
 
-  const currentImage = useQuery(Image).filtered('id == $0', image.id)[0];
+  // TODO: implement to help performance
+  // const normalizedUrl = normalizePicsumUrl(image.download_url, width);
 
   const translateY = useSharedValue(maxDragUp);
   const scale = useSharedValue(1.5);
@@ -121,6 +130,10 @@ export const DetailsScreen = () => {
     },
   });
 
+  const onGoBack = () => {
+    navigation.goBack();
+  };
+
   const onPressBackground = () => {
     if (!fullscreen) return;
     if (controlsOpacity.value === 1) {
@@ -130,6 +143,49 @@ export const DetailsScreen = () => {
     }
   };
 
+  const handleDownloadImage = () => {
+    if (!image.id || !image.download_url) return;
+
+    startDownload(
+      image.id,
+      image.download_url,
+      `${DOWNLOAD_FOLDER}/${image.id}.jpg`,
+    )
+      .progress(() => {
+        realm.write(() => {
+          realm.create(
+            Image,
+            Image.createPlaceholder(image),
+            UpdateMode.Modified,
+          );
+        });
+      })
+      .done(() => {
+        realm.write(() => {
+          realm.create(
+            Image,
+            Image.markAsDownloaded(image),
+            UpdateMode.Modified,
+          );
+        });
+      })
+      .error(() => {
+        realm.write(() => {
+          realm.create(Image, Image.markAsFailed(image), UpdateMode.Modified);
+        });
+      });
+  };
+
+  const handleDeleteImage = () => {
+    if (!image.id) return;
+    deleteDownload(`${image.filename}`, () => {
+      realm.write(() => {
+        realm.create(Image, Image.markAsDeleted(image), UpdateMode.Modified);
+      });
+    });
+    navigation.goBack();
+  };
+
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: translateY.value }, { scale: scale.value }],
@@ -137,6 +193,7 @@ export const DetailsScreen = () => {
   });
 
   const AnimatedInformationStyle = useAnimatedStyle(() => ({
+    backgroundColor: colors.background,
     opacity: informationOpacity.value,
     transform: [
       {
@@ -154,14 +211,14 @@ export const DetailsScreen = () => {
   return (
     <TouchableWithoutFeedback onPress={onPressBackground}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Header show={fullscreen} onPressBack={navigation.goBack} />
+        <Header show={fullscreen} onPressBack={onGoBack} />
         <PanGestureHandler onGestureEvent={onGestureEvent}>
           <Animated.View style={[styles.imageContainer, animatedStyle]}>
             <AnimatedImage
               style={{ height: width, width }}
-              source={{ uri: currentImage?.download_url }}
+              source={{ uri: image.download_url }}
               resizeMode={FastImage.resizeMode.contain}
-              sharedTransitionTag={currentImage?.id}
+              sharedTransitionTag={image?.id}
             />
           </Animated.View>
         </PanGestureHandler>
@@ -177,8 +234,12 @@ export const DetailsScreen = () => {
           <View style={styles.leftButton}>
             <Button iconName="share" onPress={() => null} />
           </View>
-          <Button iconName="download" onPress={() => null} />
-          <Button iconName="trash" onPress={() => null} />
+          {!isDownloaded && (
+            <Button iconName="download" onPress={handleDownloadImage} />
+          )}
+          {isDownloaded && (
+            <Button iconName="trash-2" onPress={handleDeleteImage} />
+          )}
         </FooterFloatingView>
       </ScrollView>
     </TouchableWithoutFeedback>
@@ -197,11 +258,22 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
+    bottom: 0,
     position: 'absolute',
     width: '100%',
     margin: 0,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   leftButton: {
     flex: 1,
   },
 });
+
+export const normalizePicsumUrl = (url: string, width: number) => {
+  const match = url.match(/https:\/\/picsum\.photos\/id\/(\d+)/);
+  if (!match) return url; // fallback se não for do formato esperado
+
+  const id = match[1];
+  return `https://picsum.photos/id/${id}/${width}`;
+};

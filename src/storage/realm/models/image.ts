@@ -3,6 +3,7 @@ import Realm, { index, ObjectSchema } from 'realm';
 export class Image extends Realm.Object {
   id?: string;
   author?: string;
+  filename?: string;
   url?: string;
   download_url?: string;
   downloadStatus?: string;
@@ -21,13 +22,14 @@ export class Image extends Realm.Object {
     return {
       ...data,
       createdAt: new Date(),
-      downloadStatus: 'in_progress',
+      downloadStatus: 'downloading',
     };
   }
 
   static markAsDownloaded(data: Partial<Image>) {
     return {
       ...data,
+      filename: `${data.id}.jpg`,
       downloadStatus: 'completed',
     };
   }
@@ -35,7 +37,8 @@ export class Image extends Realm.Object {
   static markAsDeleted(data: Partial<Image>) {
     return {
       ...data,
-      downloadStatus: 'pending',
+      filename: `${data.id}.jpg`,
+      downloadStatus: 'deleted',
       deletedAt: new Date(),
     };
   }
@@ -50,10 +53,11 @@ export class Image extends Realm.Object {
     properties: {
       id: 'string',
       author: 'string?',
+      filename: 'string?',
       url: 'string?',
       download_url: 'string?',
       downloadStatus: { type: 'string', default: 'pending', optional: true },
-      createdAt: 'date',
+      createdAt: { type: 'date', default: new Date() },
       deletedAt: { type: 'date', optional: true },
     },
   };
