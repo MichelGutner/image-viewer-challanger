@@ -22,13 +22,14 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { Header, ImageDescriptions } from './components/';
-import { mockImageInformation } from './mock';
+import { Header, ImageDescriptions, ImageInfoSkeleton } from './components/';
 import { useDownloader } from '@/hooks';
 import { DOWNLOAD_FOLDER } from '@/constants';
 import { useObject, useQuery, useRealm } from '@realm/react';
 import { Image } from '@/storage/realm';
 import { UpdateMode } from 'realm';
+import { getUnsplashPhotoInfo } from '@/services';
+import { mockImageInformation } from './mock';
 
 const AnimatedImage = Animated.createAnimatedComponent(FastImage);
 
@@ -55,15 +56,32 @@ export const DetailsScreen = () => {
 
   const [fullscreen, setFullscreen] = useState(false);
   const [imageInfo, setImageInfo] =
-    useState<IUnsplashPhoto>(mockImageInformation);
+    useState<IUnsplashPhoto>();
+  const [isLoadingInfo, setIsLoadingInfo] = useState(true);
 
   const controlsOpacity = useSharedValue(1);
   const absoluteYInformation = useSharedValue(maxInformationHeight);
   const informationOpacity = useSharedValue(1);
 
   const fetchImageDetails = async () => {
-    // const fullInfo = await getUnsplashPhotoInfo(image.url);
-    // console.log('Metadados completos:', fullInfo);
+    setIsLoadingInfo(true);
+    if (!image.url) {
+      setIsLoadingInfo(false);
+      return;
+    }
+    
+    try {
+      const fullInfo = await getUnsplashPhotoInfo(image.url);
+      if (!fullInfo) {
+        setImageInfo(mockImageInformation);
+      } else {
+        setImageInfo(fullInfo);
+      }
+    } catch (error) {
+      setImageInfo(mockImageInformation);
+    } finally {
+      setIsLoadingInfo(false);
+    }
   };
 
   const onGestureEvent = useAnimatedGestureHandler({
@@ -222,12 +240,17 @@ export const DetailsScreen = () => {
         <PanGestureHandler onGestureEvent={onGestureEvent}>
           <Animated.View
             entering={FadeIn.delay(500)}
-            style={[styles.informationContainer, AnimatedInformationStyle]}>
-            <ImageDescriptions info={imageInfo as any} />
+            style={styles.informationContainer}>
+            <Animated.View style={AnimatedInformationStyle}>
+              {isLoadingInfo ? <ImageInfoSkeleton /> : <ImageDescriptions info={imageInfo} />}
+            </Animated.View>
           </Animated.View>
         </PanGestureHandler>
 
         <FooterFloatingView opacity={controlsOpacity}>
+          {!fullscreen && (
+            <Button iconName="chevron-left" onPress={navigation.goBack} />
+          )}
           <View style={styles.leftButton}>
             <Button iconName="share" onPress={() => null} />
           </View>

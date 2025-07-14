@@ -6,7 +6,6 @@ export type TTextProps = TextProps & {
     | 'title'
     | 'defaultSemiBold'
     | 'subtitle'
-    | 'link'
     | 'button'
     | 'caption'
     | 'captionBold';

@@ -201,9 +201,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  image: {
-    flex: 1,
-  },
   leftButton: {
     flex: 1,
     gap: 16,

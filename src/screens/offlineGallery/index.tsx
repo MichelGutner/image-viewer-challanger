@@ -84,7 +84,6 @@ export const OfflineGallery = () => {
         </Text>
       </HeaderFloatingView>
       <FlashList
-        style={{ flex: 1 }}
         data={downloadedRows}
         estimatedItemSize={100}
         renderItem={({ item }) => renderRow(item)}

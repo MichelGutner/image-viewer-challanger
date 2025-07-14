@@ -104,7 +104,6 @@ export const GalleryScreen = () => {
         </Text>
       </HeaderFloatingView>
       <FlashList
-        style={{ flex: 1 }}
         data={remoteRows}
         estimatedItemSize={size}
         renderItem={({ item }) => renderRow(item)}

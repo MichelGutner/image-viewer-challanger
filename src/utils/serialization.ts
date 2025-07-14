@@ -8,7 +8,7 @@ export const serializeImageForNavigation = (image: Image) => {
     url: image.url,
     download_url: image.download_url,
     downloadStatus: image.downloadStatus,
-    createdAt: image.createdAt,
-    deletedAt: image.deletedAt,
+    createdAt: image.createdAt?.toISOString(),
+    deletedAt: image.deletedAt?.toISOString(),
   };
 }; 

@@ -42,10 +42,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  link: {
-    lineHeight: 30,
-    fontSize: 16,
-  },
   button: {
     fontSize: 16,
     lineHeight: 24,

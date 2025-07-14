@@ -52,13 +52,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  blurContainer: {
-    width: SIZE,
-    height: SIZE,
-    borderRadius: SIZE / 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   button: {
     width: SIZE,
     height: SIZE,
@@ -66,10 +59,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.1)',
-  },
-  label: {
-    fontSize: 28,
-    color: '#fff',
-    fontWeight: 'bold',
   },
 });
