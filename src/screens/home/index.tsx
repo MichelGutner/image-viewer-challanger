@@ -23,6 +23,7 @@ import { DOWNLOAD_FOLDER } from '@/constants';
 import { UpdateMode } from 'realm';
 import { imageWidth } from '@/constants/dimensions';
 import { ImageItem } from './components';
+import { RANDOM_IMAGE_KEY } from '@/constants/queryKeys';
 
 export const HomeScreen = () => {
   const { startDownload } = useDownloader();
@@ -37,7 +38,7 @@ export const HomeScreen = () => {
   );
 
   const { data: imageData, isLoading: queryLoading } = useQuery({
-    queryKey: [`-image`],
+    queryKey: [RANDOM_IMAGE_KEY],
     queryFn: fetchRandomImage,
     refetchOnWindowFocus: false,
   });

@@ -4,6 +4,7 @@ import {
   FooterFloatingView,
   HeaderFloatingView,
   Text,
+  GalleryLoading,
 } from '@/components';
 import { fetchImageList } from '@/services';
 import { Image } from '@/storage/realm';
@@ -119,9 +120,13 @@ export const GalleryScreen = () => {
           paddingTop: top + 60,
         }}
         ListEmptyComponent={() => (
-          <Text style={{ textAlign: 'center' }}>
-            {isLoading ? 'Carregando imagens...' : 'Nenhuma imagem encontrada'}
-          </Text>
+          isLoading ? (
+            <GalleryLoading rows={6} columns={4} />
+          ) : (
+            <Text style={{ textAlign: 'center' }}>
+              Nenhuma imagem encontrada
+            </Text>
+          )
         )}
       />
 
