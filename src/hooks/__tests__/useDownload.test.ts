@@ -24,7 +24,6 @@ jest.mock('@kesha-antonov/react-native-background-downloader', () => ({
   },
 }));
 
-// Mock react-native-fs
 jest.mock('react-native-fs', () => ({
   exists: jest.fn(() => Promise.resolve(true)),
   unlink: jest.fn(() => Promise.resolve()),
@@ -45,7 +44,6 @@ describe('useDownloader', () => {
       'test-url',
       'test-destination',
     );
-    console.log('🚀 ~ it ~ task:', task);
 
     expect(task).toBeDefined();
   });

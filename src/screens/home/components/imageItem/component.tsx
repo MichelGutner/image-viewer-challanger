@@ -9,18 +9,15 @@ import Animated, {
   SharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
+import { TImageItemProps } from './types';
 
 export const ImageItem = ({
   item,
   index,
   scrollX,
   onPress,
-}: {
-  item: Image;
-  index: number;
-  scrollX: SharedValue<number>;
-  onPress?: (image: Image) => void;
-}) => {
+  testId,
+}: TImageItemProps) => {
   const handlePress = () => {
     onPress?.(item);
   };

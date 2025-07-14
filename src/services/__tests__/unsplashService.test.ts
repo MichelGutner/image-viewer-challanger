@@ -1,6 +1,5 @@
 import { getUnsplashPhotoInfo } from '../unsplashService';
 
-// Mock axios
 jest.mock('axios', () => ({
   create: jest.fn(() => ({
     get: jest.fn(),

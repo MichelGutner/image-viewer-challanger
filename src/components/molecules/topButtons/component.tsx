@@ -17,11 +17,12 @@ export const TopButtons = ({
   const tabConfig = getTabConfig(remoteCount, offlineCount);
 
   return (
-    <View style={styles.container} testID={testID}>
+    <View style={styles.container}>
       {tabConfig.map(({ tab, icon, count }) => {
         return (
           <View key={tab} style={[styles.tab]}>
             <Button
+              testID={testID}
               containerStyle={{ flex: 1 }}
               style={styles.button}
               iconName={icon as any}

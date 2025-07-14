@@ -31,7 +31,7 @@ export const HomeScreen = () => {
   const { width } = useWindowDimensions();
   const navigation = useNavigation<any>();
   const realm = useRealm();
-  const imagesData = useQueryRealm(Image);
+  const imagesData = useQueryRealm(Image).map(image => image);
   const controlsOpacity = useSharedValue(1);
   const downloadImages = useQueryRealm(Image).filtered(
     'downloadStatus == $0',
@@ -123,6 +123,7 @@ export const HomeScreen = () => {
       <HeaderFloatingView>
         <View style={{ flex: 1 }} />
         <TopButtons
+          testID="top-buttons"
           onPress={tab => {
             if (tab === 'remote') {
               navigation.navigate('Gallery');
@@ -171,6 +172,7 @@ export const HomeScreen = () => {
         windowSize={5}
         renderItem={({ item, index }) => (
           <ImageItem
+            testId={`image-item-${index}`}
             onPress={handleNavigateToDetails}
             item={item}
             index={index}
@@ -188,9 +190,17 @@ export const HomeScreen = () => {
       <FooterFloatingView opacity={controlsOpacity}>
         <Animated.View style={styles.leftButton}>
           <Button iconName="chevron-left" onPress={gotToPreviousImage} />
-          <Button iconName="plus" onPress={fetchAndAddImage} />
+          <Button
+            testID="plus-button-test-id"
+            iconName="plus"
+            onPress={fetchAndAddImage}
+          />
         </Animated.View>
-        <Button iconName="download" onPress={handleDownloadImage} />
+        <Button
+          testID="download-button-test-id"
+          iconName="download"
+          onPress={handleDownloadImage}
+        />
       </FooterFloatingView>
     </View>
   );

@@ -8,7 +8,7 @@ const extensionFiles = ['ts', 'tsx', 'js', 'jsx', 'json', 'node'];
 
 module.exports = {
   preset: 'react-native',
-  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   collectCoverage: true,
   collectCoverageFrom: ['<rootDir>/src/**/*.{ts,tsx}'],
   moduleFileExtensions: extensionFiles,
