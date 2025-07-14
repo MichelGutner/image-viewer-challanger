@@ -22,7 +22,8 @@ type Props = {
     | 'plus'
     | 'layers'
     | 'wifi'
-    | 'wifi-off';
+    | 'wifi-off'
+    | 'alert-circle';
 };
 
 export const Button = ({ onPress, iconName, style, containerStyle }: Props) => {

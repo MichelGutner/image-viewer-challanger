@@ -10,8 +10,6 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 
-const AnimatedImage = Animated.createAnimatedComponent(FastImage);
-
 export const ImageItem = ({
   item,
   index,
@@ -49,12 +47,15 @@ export const ImageItem = ({
         overflow: 'hidden',
         borderRadius: 16,
       }}>
-      <AnimatedImage
+      <Animated.View
         style={[{ flex: 1 }, animatedStyle]}
-        source={{ uri: item.download_url }}
-        resizeMode={FastImage.resizeMode.cover}
-        sharedTransitionTag={item.id}
-      />
+        sharedTransitionTag={item.id}>
+        <FastImage
+          style={{ width: '100%', height: '100%' }}
+          source={{ uri: item.download_url }}
+          resizeMode={FastImage.resizeMode.cover}
+        />
+      </Animated.View>
     </Pressable>
   );
 };

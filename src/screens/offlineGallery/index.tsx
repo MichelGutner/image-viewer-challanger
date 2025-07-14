@@ -4,6 +4,7 @@ import {
   FooterFloatingView,
   HeaderFloatingView,
   Text,
+  EmptyState,
 } from '@/components';
 import { Image } from '@/storage/realm';
 import { useNavigation } from '@react-navigation/native';
@@ -15,6 +16,7 @@ import { useQuery as useQueryRealm } from '@realm/react';
 import { FlashList } from '@shopify/flash-list';
 import { useMemo } from 'react';
 import { groupInRows } from '../helpers';
+import { serializeImageForNavigation } from '@/utils/serialization';
 
 const AnimatedImage = Animated.createAnimatedComponent(FastImage);
 
@@ -35,11 +37,11 @@ export const OfflineGallery = () => {
 
   const renderRow = (row: Image[]) => (
     <View style={styles.row}>
-      {row.map(image => (
-        <Pressable
-          key={image.id}
-          onPress={() => navigation.navigate('Details', { image })}
-          style={styles.imageWrapper}>
+              {row.map(image => (
+          <Pressable
+            key={image.id}
+            onPress={() => navigation.navigate('Details', { image: serializeImageForNavigation(image) })}
+            style={styles.imageWrapper}>
           <AnimatedImage
             source={{ uri: image.download_url }}
             style={styles.image}
@@ -92,6 +94,9 @@ export const OfflineGallery = () => {
           paddingBottom: bottom + 20,
           paddingTop: top + 60,
         }}
+        ListEmptyComponent={() => (
+          <EmptyState message="Nenhuma imagem foi encontrada" />
+        )}
       />
 
       <FooterFloatingView />

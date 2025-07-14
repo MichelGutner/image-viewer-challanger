@@ -24,6 +24,7 @@ import { UpdateMode } from 'realm';
 import { imageWidth } from '@/constants/dimensions';
 import { ImageItem } from './components';
 import { RANDOM_IMAGE_KEY } from '@/constants/queryKeys';
+import { serializeImageForNavigation } from '@/utils/serialization';
 
 export const HomeScreen = () => {
   const { startDownload } = useDownloader();
@@ -69,7 +70,7 @@ export const HomeScreen = () => {
   const handleNavigateToDetails = (image: Image) => {
     animatedImageScale.value = withTiming(1.5);
     navigation.navigate('Details', {
-      image,
+      image: serializeImageForNavigation(image),
       isDownloaded: image.downloadStatus === 'completed',
     });
   };

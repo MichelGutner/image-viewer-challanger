@@ -5,6 +5,7 @@ import {
   HeaderFloatingView,
   Text,
   GalleryLoading,
+  EmptyState,
 } from '@/components';
 import { fetchImageList } from '@/services';
 import { Image } from '@/storage/realm';
@@ -17,6 +18,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FlashList } from '@shopify/flash-list';
 import { groupInRows } from '../helpers';
 import { GALLERY_KEY } from '@/constants/queryKeys';
+import { serializeImageForNavigation } from '@/utils/serialization';
 
 const AnimatedImage = Animated.createAnimatedComponent(FastImage);
 
@@ -47,7 +49,7 @@ export const GalleryScreen = () => {
   });
 
   const goToDetails = (image: Image) => {
-    navigation.navigate('Details', { image });
+    navigation.navigate('Details', { image: serializeImageForNavigation(image) });
   };
 
   const all = data?.pages.flatMap(p => p.data) ?? [];
@@ -123,9 +125,7 @@ export const GalleryScreen = () => {
           isLoading ? (
             <GalleryLoading rows={6} columns={4} />
           ) : (
-            <Text style={{ textAlign: 'center' }}>
-              Nenhuma imagem encontrada
-            </Text>
+            <EmptyState message="Nenhuma imagem encontrada" />
           )
         )}
       />

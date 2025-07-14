@@ -7,8 +7,8 @@ export class Image extends Realm.Object {
   url?: string;
   download_url?: string;
   downloadStatus?: string;
-  createdAt?: Date;
-  deletedAt?: Date;
+  createdAt?: string;
+  deletedAt?: string;
 
   static createBlank(data: Partial<Image>) {
     return {
@@ -57,7 +57,7 @@ export class Image extends Realm.Object {
       url: 'string?',
       download_url: 'string?',
       downloadStatus: { type: 'string', default: 'pending', optional: true },
-      createdAt: { type: 'date', default: new Date() },
+      createdAt: { type: 'date', default: new Date().toISOString() },
       deletedAt: { type: 'date', optional: true },
     },
   };

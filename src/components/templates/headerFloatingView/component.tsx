@@ -24,12 +24,14 @@ export const HeaderFloatingView = ({
     <Animated.View
       entering={FadeIn}
       exiting={FadeOut}
-      style={[styles.bottomButtons, animatedStyle]}>
-      <LinearGradient
-        style={[styles.linearGradient, { paddingTop: top + 10 }]}
-        colors={HEADER_GRADIENT_COLORS}>
-        {children}
-      </LinearGradient>
+      style={styles.bottomButtons}>
+      <Animated.View style={animatedStyle}>
+        <LinearGradient
+          style={[styles.linearGradient, { paddingTop: top + 10 }]}
+          colors={HEADER_GRADIENT_COLORS}>
+          {children}
+        </LinearGradient>
+      </Animated.View>
     </Animated.View>
   );
 };
