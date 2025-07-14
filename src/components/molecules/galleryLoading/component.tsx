@@ -8,11 +8,12 @@ export const GalleryLoading = ({
   message = 'Carregando imagens...',
   rows = 6,
   columns = 4,
+  testID,
 }: GalleryLoadingProps) => {
   const { colors } = useTheme();
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID={testID}>
       <LoadingSkeleton rows={rows} columns={columns} />
       <View style={styles.messageContainer}>
         <Text style={[styles.message, { color: colors.text }]} type="caption">

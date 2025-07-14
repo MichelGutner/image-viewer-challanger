@@ -84,7 +84,7 @@ export const GalleryScreen = () => {
   const scrollX = useSharedValue(randomItemIndex);
 
   return (
-    <View style={{ flex: 1, gap: 16, paddingHorizontal: 4 }}>
+    <View style={{ flex: 1, gap: 16, paddingHorizontal: 4 }} testID="gallery-screen">
       <View style={StyleSheet.absoluteFillObject}>
         {randomRow?.map((image, index) => {
           return (

@@ -7,6 +7,7 @@ type Props = {
   containerStyle?: ViewStyle;
   style?: ViewStyle;
   onPress?: () => void;
+  testID?: string;
   iconName:
     | 'chevron-left'
     | 'calendar'
@@ -26,11 +27,11 @@ type Props = {
     | 'alert-circle';
 };
 
-export const Button = ({ onPress, iconName, style, containerStyle }: Props) => {
+export const Button = ({ onPress, iconName, style, containerStyle, testID }: Props) => {
   const { colors } = useTheme();
 
   return (
-    <View style={[styles.container, containerStyle]}>
+    <View style={[styles.container, containerStyle]} testID={testID}>
       <TouchableOpacity
         hitSlop={20}
         style={[styles.button, style]}

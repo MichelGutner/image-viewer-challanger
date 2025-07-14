@@ -49,7 +49,7 @@ export const DetailsScreen = () => {
   const maxDragDown = 0;
   const maxInformationHeight = height * 0.73;
   const maxScale = 1.5;
-  if (!image) return null;
+  if (!image) return <></>;
 
   const translateY = useSharedValue(maxDragUp);
   const scale = useSharedValue(maxScale);
@@ -221,7 +221,7 @@ export const DetailsScreen = () => {
 
   return (
     <TouchableWithoutFeedback onPress={onPressBackground}>
-      <View style={styles.container}>
+      <View style={styles.container} testID="details-screen">
         <Header
           show={fullscreen}
           onPressBack={onGoBack}

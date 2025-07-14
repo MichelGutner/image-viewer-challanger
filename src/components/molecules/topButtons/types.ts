@@ -4,6 +4,7 @@ export type TTopButtonsProps = {
   onPress: (tab: TabOption) => void;
   remoteCount?: number;
   offlineCount?: number;
+  testID?: string;
 };
 
 export type TTabConfig = {

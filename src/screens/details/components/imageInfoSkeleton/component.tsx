@@ -5,7 +5,7 @@ import { useTheme } from '@react-navigation/native';
 export const ImageInfoSkeleton = () => {
   const { colors } = useTheme();
   return (
-    <View style={styles.wrapper}>
+    <View style={styles.wrapper} testID="image-info-skeleton">
       <View style={styles.header}>
         <View style={styles.authorSection}>
           <View style={[styles.avatar, { backgroundColor: colors.card }]} />

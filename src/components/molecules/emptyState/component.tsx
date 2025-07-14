@@ -3,20 +3,16 @@ import { View, StyleSheet } from 'react-native';
 import { Text, Button } from '@/components/atoms';
 import { useTheme } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
-
-interface EmptyStateProps {
-  message?: string;
-  onAction?: () => void;
-  showAction?: boolean;
-}
+import { EmptyStateProps } from './types';
 
 export const EmptyState = ({
   message = 'Nenhum conteúdo encontrado',
+  testID,
 }: EmptyStateProps) => {
   const { colors } = useTheme();
 
   return (
-    <View style={styles.wrapper}>
+    <View style={styles.wrapper} testID={testID}>
       <View style={styles.content}>
         <Icon
           name="alert-circle"

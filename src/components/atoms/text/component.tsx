@@ -2,11 +2,12 @@ import { useTheme } from '@react-navigation/native';
 import { StyleSheet, Text as RNText } from 'react-native';
 import { TTextProps } from './types';
 
-export const Text = ({ style, type = 'default', ...rest }: TTextProps) => {
+export const Text = ({ style, type = 'default', testID, ...rest }: TTextProps) => {
   const { colors } = useTheme();
 
   return (
     <RNText
+      testID={testID}
       style={[
         { color: colors.text },
         type === 'default' ? styles.default : undefined,

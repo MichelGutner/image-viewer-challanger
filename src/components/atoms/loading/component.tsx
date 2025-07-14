@@ -13,6 +13,7 @@ export const LoadingSkeleton = ({
   type = 'gallery',
   rows = 4,
   columns = 4,
+  testID,
 }: LoadingSkeletonProps) => {
   const { colors } = useTheme();
   const { width } = useWindowDimensions();
@@ -30,7 +31,7 @@ export const LoadingSkeleton = ({
 
   if (type === 'gallery') {
     return (
-      <View style={styles.container}>
+      <View style={styles.container} testID={testID}>
         {Array.from({ length: rows }).map((_, rowIndex) => (
           <View key={rowIndex} style={styles.row}>
             {Array.from({ length: columns }).map((_, colIndex) => (
@@ -56,6 +57,7 @@ export const LoadingSkeleton = ({
   if (type === 'image') {
     return (
       <Animated.View
+        testID={testID}
         style={[
           styles.skeletonImage,
           {
@@ -69,7 +71,7 @@ export const LoadingSkeleton = ({
 
   if (type === 'text') {
     return (
-      <View style={styles.textContainer}>
+      <View style={styles.textContainer} testID={testID}>
         {Array.from({ length: 3 }).map((_, index) => (
           <Animated.View
             key={index}

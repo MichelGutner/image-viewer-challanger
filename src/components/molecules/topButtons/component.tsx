@@ -8,6 +8,7 @@ export const TopButtons = ({
   onPress,
   remoteCount,
   offlineCount,
+  testID,
 }: TTopButtonsProps) => {
   const handleTabChange = (tab: TabOption) => {
     onPress?.(tab);
@@ -16,7 +17,7 @@ export const TopButtons = ({
   const tabConfig = getTabConfig(remoteCount, offlineCount);
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID={testID}>
       {tabConfig.map(({ tab, icon, count }) => {
         return (
           <View key={tab} style={[styles.tab]}>

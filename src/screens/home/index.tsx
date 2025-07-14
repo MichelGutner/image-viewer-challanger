@@ -119,7 +119,7 @@ export const HomeScreen = () => {
   }, [imagesData]);
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID="home-screen">
       <HeaderFloatingView>
         <View style={{ flex: 1 }} />
         <TopButtons
