@@ -1,120 +1,194 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# ImageViewerApp 📱
 
-# Getting Started
+Um aplicativo React Native para visualização de imagens com funcionalidades de galeria remota e offline, download de imagens e navegação intuitiva.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## 🚀 Funcionalidades
 
-## Step 1: Start the Metro Server
+- **Galeria Remota**: Visualize imagens da API Picsum Photos
+- **Galeria Offline**: Acesse imagens baixadas sem conexão
+- **Download de Imagens**: Baixe imagens para visualização offline
+- **Navegação Intuitiva**: Interface limpa e fácil de usar
+- **Background Download**: Downloads em segundo plano
+- **Persistência Local**: Armazenamento local com Realm
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+## 📋 Pré-requisitos
 
-To start Metro, run the following command from the _root_ of your React Native project:
+Antes de começar, certifique-se de ter instalado:
 
+- [Node.js](https://nodejs.org/) (versão 16 ou superior)
+- [npm](https://www.npmjs.com/) ou [Yarn](https://yarnpkg.com/)
+- [React Native CLI](https://reactnative.dev/docs/environment-setup)
+- [Xcode](https://developer.apple.com/xcode/) (para iOS)
+- [Android Studio](https://developer.android.com/studio) (para Android)
+- [CocoaPods](https://cocoapods.org/) (para iOS)
+
+## 🛠️ Instalação
+
+2. **Instale as dependências**
+   ```bash
+   npm install
+   # ou
+   yarn install
+   ```
+
+3. **Instale as dependências do iOS** (apenas para desenvolvimento iOS)
+   ```bash
+   cd ios
+   pod install
+   cd ..
+   ```
+
+## 🏃‍♂️ Executando o Aplicativo
+
+### Desenvolvimento
+
+1. **Inicie o Metro bundler**
+   ```bash
+   npm start
+   # ou
+   yarn start
+   ```
+
+2. **Execute no iOS Simulator**
+   ```bash
+   npm run ios
+   # ou
+   yarn ios
+   ```
+
+3. **Execute no Android Emulator**
+   ```bash
+   npm run android
+   # ou
+   yarn android
+   ```
+
+### Build de Produção
+
+#### iOS
 ```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
+cd ios
+xcodebuild -workspace ImageViewerApp.xcworkspace -scheme ImageViewerApp -configuration Release -destination generic/platform=iOS -archivePath ImageViewerApp.xcarchive archive
 ```
 
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
+#### Android
 ```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
+cd android
+./gradlew assembleRelease
 ```
 
-### For iOS
+## 🧪 Executando Testes
 
 ```bash
-# using npm
-npm run ios
+# Executar todos os testes
+npm test
+# ou
+yarn test
 
-# OR using Yarn
-yarn ios
+# Executar testes com coverage
+npm run test:coverage
+# ou
+yarn test:coverage
+
+# Executar testes em modo watch
+npm run test:watch
+# ou
+yarn test:watch
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+## 📁 Estrutura do Projeto
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+```
+src/
+├── components/          # Componentes reutilizáveis
+│   ├── atoms/          # Componentes básicos (Button, Text, Loading)
+│   ├── molecules/      # Componentes compostos (TopButtons, BackDropImage)
+│   └── templates/      # Templates de layout (Header, Footer)
+├── screens/            # Telas do aplicativo
+│   ├── home/           # Tela principal
+│   ├── gallery/        # Galeria remota
+│   ├── offlineGallery/ # Galeria offline
+│   └── details/        # Detalhes da imagem
+├── services/           # Serviços de API e dados
+├── hooks/              # Custom hooks
+├── storage/            # Configuração de armazenamento (Realm)
+├── store/              # Gerenciamento de estado (Redux)
+├── types/              # Definições de tipos TypeScript
+├── constants/          # Constantes do aplicativo
+└── utils/              # Utilitários e helpers
+```
 
-## Step 3: Modifying your App
+## 🔧 Configuração
 
-Now that you have successfully run the app, let's modify it.
+### Configuração do Realm
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+O aplicativo usa Realm para persistência local. A configuração está em `src/storage/realm/index.ts`.
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+#### Realm Studio
 
-## Congratulations! :tada:
+Para visualizar e gerenciar o banco de dados Realm, você pode usar o **Realm Studio**:
 
-You've successfully run and modified your React Native App. :partying_face:
+1. **Download do Realm Studio**
+   - Acesse o [site oficial do Realm Studio](https://realm.io/products/realm-studio/)
+   - Baixe a versão para seu sistema operacional (macOS, Windows, Linux)
 
-### Now what?
+2. **Path do Banco de Dados**
+   - O aplicativo exibe o path padrão do Realm no console quando inicia
+   - Procure por: `Realm path: [caminho-do-banco]` nos logs do Metro bundler
+   - Exemplo de path: `/Users/[usuario]/Library/Developer/CoreSimulator/Devices/[device-id]/data/Containers/Data/Application/[app-id]/Documents/default.realm`
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+3. **Abrindo no Realm Studio**
+   - Abra o Realm Studio
+   - Clique em "Open Realm file"
+   - Navegue até o path exibido no console
+   - Selecione o arquivo `default.realm`
+   - Agora você pode visualizar e gerenciar os dados do banco
 
-# Troubleshooting
+**Nota**: O path pode variar dependendo da plataforma (iOS Simulator, Android Emulator, dispositivo físico).
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+## 📱 Funcionalidades Principais
 
-# Learn More
+### Galeria Remota
+- Carregamento infinito de imagens
+- Busca de imagens aleatórias
+- Informações detalhadas das imagens
 
-To learn more about React Native, take a look at the following resources:
+### Galeria Offline
+- Visualização de imagens baixadas
+- Gerenciamento de downloads
+- Exclusão de imagens
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+### Download de Imagens
+- Download em background
+- Progresso do download
+- Tratamento de erros
 
+## 🐛 Solução de Problemas
 
-**Arquitetura do projeto**
+### Problemas Comuns
 
-📦ImageViewerApp
-├── 📁src
-│   ├── 📁assets
-│   │   └── 📁images
-│   │
-│   ├── 📁components
-│   │   ├── ImageCard.tsx
-│   │   ├── FullImageModal.tsx
-│   │   └── Header.tsx
-│   │
-│   ├── 📁redux
-│   │   ├── store.ts
-│   │   └── 📁slices
-│   │       ├── imagesSlice.ts
-│   │       └── savedSlice.ts
-│   │
-│   ├── 📁screens
-│   │   ├── HomeScreen.tsx
-│   │   ├── GalleryScreen.tsx
-│   │   └── SavedImagesScreen.tsx
-│   │
-│   ├── 📁services
-│   │   └── picsumService.ts
-│   │
-│   ├── 📁storage
-│   │   └── imageStorage.ts
-│   │
-│   ├── 📁navigation
-│   │   └── AppNavigator.tsx
-│   │
-│   ├── 📁utils
-│   │   └── format.ts
-│   │
-│   ├── 📁types
-│   │   └── index.ts
-│   │
-│   └── App.tsx
+1. **Erro de Metro bundler**
+   ```bash
+   npx react-native start --reset-cache
+   ```
+
+2. **Erro de pods no iOS**
+   ```bash
+   cd ios
+   pod deintegrate
+   pod install
+   ```
+
+3. **Erro de build no Android**
+   ```bash
+   cd android
+   ./gradlew clean
+   ```
+
+4. **Erro de dependências**
+   ```bash
+   rm -rf node_modules
+   npm install
+   ```
+
+**Desenvolvido com ❤️ usando React Native**

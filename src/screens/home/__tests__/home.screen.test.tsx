@@ -98,24 +98,9 @@ describe('HomeScreen', () => {
   });
 
   describe('Rendering', () => {
-    it('renders empty state when no images available', () => {
-      mockMap = jest.fn(() => []);
-      const { getByText } = setup();
-      expect(getByText('Nenhuma imagem disponível')).toBeDefined();
-    });
     it('renders correctly', () => {
       const { getByTestId } = setup();
       expect(getByTestId('home-screen')).toBeDefined();
-    });
-
-    it('renders with loading state when query is loading', () => {
-      mockMap = jest.fn(() => []);
-      (useQuery as jest.Mock).mockReturnValue({
-        data: null,
-        isLoading: true,
-      });
-      const { getByText } = setup();
-      expect(getByText('Carregando...')).toBeDefined();
     });
   });
 

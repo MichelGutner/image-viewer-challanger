@@ -10,7 +10,6 @@ import { fetchRandomImage } from '@/services/picturesService';
 import { Image } from '@/storage/realm';
 import { useNavigation } from '@react-navigation/native';
 import { useQuery as useQueryRealm, useRealm } from '@realm/react';
-import { useQuery } from '@tanstack/react-query';
 import { FlatList, StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, {
   useAnimatedScrollHandler,
@@ -23,7 +22,6 @@ import { DOWNLOAD_FOLDER } from '@/constants';
 import { UpdateMode } from 'realm';
 import { imageWidth } from '@/constants/dimensions';
 import { ImageItem } from './components';
-import { RANDOM_IMAGE_KEY } from '@/constants/queryKeys';
 import { serializeImageForNavigation } from '@/utils/serialization';
 
 export const HomeScreen = () => {
@@ -37,12 +35,6 @@ export const HomeScreen = () => {
     'downloadStatus == $0',
     'completed',
   );
-
-  const { data: imageData, isLoading: queryLoading } = useQuery({
-    queryKey: [RANDOM_IMAGE_KEY],
-    queryFn: fetchRandomImage,
-    refetchOnWindowFocus: false,
-  });
 
   const animatedImageScale = useSharedValue(1);
 
@@ -179,13 +171,6 @@ export const HomeScreen = () => {
             scrollX={scrollX}
           />
         )}
-        ListEmptyComponent={
-          queryLoading ? (
-            <Text>Carregando...</Text>
-          ) : (
-            <Text>Nenhuma imagem disponível</Text>
-          )
-        }
       />
       <FooterFloatingView opacity={controlsOpacity}>
         <Animated.View style={styles.leftButton}>
