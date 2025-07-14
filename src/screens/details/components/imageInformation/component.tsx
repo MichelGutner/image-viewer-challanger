@@ -2,23 +2,15 @@ import React from 'react';
 import { View, StyleSheet, Linking, Image } from 'react-native';
 import { Text } from '@/components';
 import Icon from 'react-native-vector-icons/Feather';
-import { mockImageInformation } from './mock';
+import { mockImageInformation } from '../../mock';
 
 interface ImageInfoProps {
   info: Partial<typeof mockImageInformation>;
 }
 
 export const ImageDescriptions = ({ info }: ImageInfoProps) => {
-  const formatDate = (iso: string) =>
-    new Date(iso).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    });
-
   return (
     <View style={styles.wrapper}>
-      {/* Autor + Perfil */}
       <View style={styles.authorRow}>
         <Image
           source={{ uri: info?.user?.profile_image.small }}
@@ -43,7 +35,7 @@ export const ImageDescriptions = ({ info }: ImageInfoProps) => {
       {/* Metadados */}
       <View style={styles.metaRow}>
         <Icon name="calendar" size={16} color="#777" />
-        <Text style={styles.metaText}>{formatDate(info?.created_at ?? '')}</Text>
+        <Text style={styles.metaText}>{info?.created_at?.toPTBrString()}</Text>
       </View>
 
       <View style={styles.metaRow}>

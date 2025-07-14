@@ -5,59 +5,40 @@ import {
   HeaderFloatingView,
   Text,
 } from '@/components';
-import { fetchImageList } from '@/services';
 import { Image } from '@/storage/realm';
 import { useNavigation } from '@react-navigation/native';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Animated, { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useQuery as useQueryRealm } from '@realm/react';
 import { FlashList } from '@shopify/flash-list';
+import { useMemo } from 'react';
 import { groupInRows } from '../helpers';
-import { GALLERY_KEY } from '@/constants/queryKeys';
 
 const AnimatedImage = Animated.createAnimatedComponent(FastImage);
 
-export const GalleryScreen = () => {
+export const OfflineGallery = () => {
   const navigation = useNavigation<any>();
   const { bottom, top } = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
-  const size = width / 4 - 3;
-  const itemsPerPage = 100;
+  const imageQuery = useQueryRealm(Image);
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isLoading,
-    isFetchingNextPage,
-    refetch,
-  } = useInfiniteQuery({
-    queryKey: [GALLERY_KEY],
-    queryFn: async ({ pageParam = 0 }) => {
-      const response = await fetchImageList(pageParam, itemsPerPage);
-      return { data: response, nextPage: pageParam + 1 };
-    },
-    getNextPageParam: lastPage =>
-      lastPage?.data?.length ? lastPage.nextPage : undefined,
-    initialPageParam: 1,
-    refetchOnWindowFocus: false,
-  });
+  const downloadedImages = imageQuery.filtered(
+    'downloadStatus == $0',
+    'completed',
+  );
 
-  const goToDetails = (image: Image) => {
-    navigation.navigate('Details', { image });
-  };
-
-  const all = data?.pages.flatMap(p => p.data) ?? [];
-  const remoteRows = groupInRows(all as Image[]);
+  const downloadedRows = useMemo(
+    () => groupInRows(Array.from(downloadedImages)),
+    [downloadedImages],
+  );
 
   const renderRow = (row: Image[]) => (
     <View style={styles.row}>
       {row.map(image => (
         <Pressable
           key={image.id}
-          onPress={() => goToDetails(image)}
+          onPress={() => navigation.navigate('Details', { image })}
           style={styles.imageWrapper}>
           <AnimatedImage
             source={{ uri: image.download_url }}
@@ -71,9 +52,9 @@ export const GalleryScreen = () => {
       ))}
     </View>
   );
-  const rowCount = remoteRows.length;
+  const rowCount = downloadedRows.length;
   const randomRowIndex = Math.floor(Math.random() * rowCount);
-  const randomRow = remoteRows[randomRowIndex] ?? [];
+  const randomRow = downloadedRows[randomRowIndex] ?? [];
 
   const itemCount = randomRow.length;
   const randomItemIndex = Math.floor(Math.random() * itemCount);
@@ -102,27 +83,15 @@ export const GalleryScreen = () => {
       </HeaderFloatingView>
       <FlashList
         style={{ flex: 1 }}
-        data={remoteRows}
-        estimatedItemSize={size}
+        data={downloadedRows}
+        estimatedItemSize={100}
         renderItem={({ item }) => renderRow(item)}
-        onEndReached={() => {
-          if (hasNextPage && !isFetchingNextPage) {
-            fetchNextPage();
-          }
-        }}
         onEndReachedThreshold={0.2}
-        refreshing={isLoading}
-        onRefresh={refetch}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: bottom + 20,
           paddingTop: top + 60,
         }}
-        ListEmptyComponent={() => (
-          <Text style={{ textAlign: 'center' }}>
-            {isLoading ? 'Carregando imagens...' : 'Nenhuma imagem encontrada'}
-          </Text>
-        )}
       />
 
       <FooterFloatingView />

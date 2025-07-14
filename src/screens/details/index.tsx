@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, FooterFloatingView } from '@/components';
 import { TRouteParams } from '@/navigation';
 import { IUnsplashPhoto } from '@/types/unsplash';
 import { useNavigation, useRoute, useTheme } from '@react-navigation/native';
 import {
-  ScrollView,
   StatusBar,
   StyleSheet,
   TouchableWithoutFeedback,
@@ -23,8 +22,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { Header } from './header';
-import { ImageDescriptions } from './imageInformation';
+import { Header, ImageDescriptions } from './components/';
 import { mockImageInformation } from './mock';
 import { useDownloader } from '@/hooks';
 import { DOWNLOAD_FOLDER } from '@/constants';
@@ -43,27 +41,24 @@ export const DetailsScreen = () => {
   const realm = useRealm();
 
   const image = params?.image;
-  const isDownloaded = useObject(Image, image?.id)?.downloadStatus === 'completed';
-
-  console.log('🚀 ~ DetailsScreen ~ isDownloaded:', isDownloaded);
+  const isDownloaded =
+    useObject(Image, image?.id)?.downloadStatus === 'completed';
 
   const maxDragUp = -height * 0.3;
   const maxDragDown = 0;
-
+  const maxInformationHeight = height * 0.73;
+  const maxScale = 1.5;
   if (!image) return null;
 
-  // TODO: implement to help performance
-  // const normalizedUrl = normalizePicsumUrl(image.download_url, width);
-
   const translateY = useSharedValue(maxDragUp);
-  const scale = useSharedValue(1.5);
+  const scale = useSharedValue(maxScale);
 
-  const [fullscreen, setFullscreen] = React.useState(false);
-  const [fullImageInformation, setFullImageInformation] =
-    React.useState<IUnsplashPhoto>(mockImageInformation);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [imageInfo, setImageInfo] =
+    useState<IUnsplashPhoto>(mockImageInformation);
 
   const controlsOpacity = useSharedValue(1);
-  const absoluteYInformation = useSharedValue(height * 0.73);
+  const absoluteYInformation = useSharedValue(maxInformationHeight);
   const informationOpacity = useSharedValue(1);
 
   const fetchImageDetails = async () => {
@@ -78,7 +73,6 @@ export const DetailsScreen = () => {
     onActive: (event, ctx: any) => {
       const newTranslateY = ctx.startY + event.translationY;
       const startY = ctx.startY;
-      console.log('newTranslateY:', newTranslateY);
       if (startY === 0) {
         runOnJS(setFullscreen)(false);
       } else if (startY < 0 && newTranslateY > 0) {
@@ -88,12 +82,12 @@ export const DetailsScreen = () => {
       absoluteYInformation.value = interpolate(
         newTranslateY,
         [maxDragDown, maxDragUp],
-        [height, height * 0.73],
+        [height, maxInformationHeight],
         Extrapolation.CLAMP,
       );
       informationOpacity.value = interpolate(
         absoluteYInformation.value,
-        [height, height * 0.73],
+        [height, maxInformationHeight],
         [0, 1],
         Extrapolation.IDENTITY,
       );
@@ -103,7 +97,7 @@ export const DetailsScreen = () => {
       scale.value = interpolate(
         translateY.value,
         [maxDragDown, maxDragUp],
-        [1, 1.5],
+        [1, maxScale],
         Extrapolation.CLAMP,
       );
     },
@@ -112,9 +106,9 @@ export const DetailsScreen = () => {
       if (direction < -1) {
         controlsOpacity.value = withTiming(1);
         translateY.value = withTiming(maxDragUp);
-        scale.value = withTiming(1.5);
+        scale.value = withTiming(maxScale);
         informationOpacity.value = withTiming(1);
-        absoluteYInformation.value = withTiming(height * 0.73);
+        absoluteYInformation.value = withTiming(maxInformationHeight);
         runOnJS(setFullscreen)(false);
       } else if (direction > 1) {
         translateY.value = withTiming(0);
@@ -123,10 +117,6 @@ export const DetailsScreen = () => {
         absoluteYInformation.value = withTiming(height);
         runOnJS(setFullscreen)(true);
       }
-      //TODO: implement goback when dragging down
-      // if (direction > 100) {
-      //   runOnJS(navigation.goBack)();
-      // }
     },
   });
 
@@ -177,8 +167,9 @@ export const DetailsScreen = () => {
   };
 
   const handleDeleteImage = () => {
-    if (!image.id) return;
-    deleteDownload(`${image.filename}`, () => {
+    if (!image.id || !image?.filename) return;
+
+    deleteDownload(image.filename, () => {
       realm.write(() => {
         realm.create(Image, Image.markAsDeleted(image), UpdateMode.Modified);
       });
@@ -204,14 +195,20 @@ export const DetailsScreen = () => {
 
   useEffect(() => {
     StatusBar.setHidden(!fullscreen, 'fade');
-
     fetchImageDetails();
+    return () => {
+      StatusBar.setHidden(false, 'fade');
+    };
   }, [fullscreen]);
 
   return (
     <TouchableWithoutFeedback onPress={onPressBackground}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Header show={fullscreen} onPressBack={onGoBack} />
+      <View style={styles.container}>
+        <Header
+          show={fullscreen}
+          onPressBack={onGoBack}
+          opacity={controlsOpacity}
+        />
         <PanGestureHandler onGestureEvent={onGestureEvent}>
           <Animated.View style={[styles.imageContainer, animatedStyle]}>
             <AnimatedImage
@@ -224,9 +221,9 @@ export const DetailsScreen = () => {
         </PanGestureHandler>
         <PanGestureHandler onGestureEvent={onGestureEvent}>
           <Animated.View
-            entering={FadeIn.delay(300)}
+            entering={FadeIn.delay(500)}
             style={[styles.informationContainer, AnimatedInformationStyle]}>
-            <ImageDescriptions info={fullImageInformation as any} />
+            <ImageDescriptions info={imageInfo as any} />
           </Animated.View>
         </PanGestureHandler>
 
@@ -241,7 +238,7 @@ export const DetailsScreen = () => {
             <Button iconName="trash-2" onPress={handleDeleteImage} />
           )}
         </FooterFloatingView>
-      </ScrollView>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -255,11 +252,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   informationContainer: {
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    position: 'absolute',
+    ...StyleSheet.absoluteFillObject,
     width: '100%',
     margin: 0,
     borderTopLeftRadius: 20,
@@ -269,11 +262,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-export const normalizePicsumUrl = (url: string, width: number) => {
-  const match = url.match(/https:\/\/picsum\.photos\/id\/(\d+)/);
-  if (!match) return url; // fallback se não for do formato esperado
-
-  const id = match[1];
-  return `https://picsum.photos/id/${id}/${width}`;
-};

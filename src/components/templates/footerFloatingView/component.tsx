@@ -8,6 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TFooterFloatingViewProps } from './types';
+import { FOOTER_GRADIENT_COLORS } from './constants';
 
 export const FooterFloatingView = ({
   children,
@@ -15,7 +16,7 @@ export const FooterFloatingView = ({
 }: TFooterFloatingViewProps) => {
   const { bottom } = useSafeAreaInsets();
 
-  const animatedBottomStyle = useAnimatedStyle(() => ({
+  const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity?.value ?? 1,
   }));
 
@@ -23,13 +24,10 @@ export const FooterFloatingView = ({
     <Animated.View
       entering={FadeIn}
       exiting={FadeOut}
-      style={[styles.bottomButtons, animatedBottomStyle]}>
+      style={[styles.bottomButtons, animatedStyle]}>
       <LinearGradient
-        style={[
-          styles.linearGradient,
-          { paddingBottom: bottom + 30, padding: 12 },
-        ]}
-        colors={['transparent', 'rgba(0, 0, 0, 0.9)']}>
+        style={[styles.linearGradient, { paddingBottom: bottom + 30 }]}
+        colors={FOOTER_GRADIENT_COLORS}>
         {children}
       </LinearGradient>
     </Animated.View>
@@ -48,5 +46,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     flexDirection: 'row',
     gap: 16,
+    padding: 12,
   },
 });

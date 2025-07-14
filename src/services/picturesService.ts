@@ -11,12 +11,6 @@ export const fetchRandomImage = async (): Promise<IImage> => {
   return response.data[0];
 };
 
-/**
- * @param page Número da página
- * @param limit Quantidade de imagens por página
- * @description Busca uma lista de imagens paginada da API do Picsum.
- * @docs https://picsum.photos
- */
 export const fetchImageList = async (
   page: number = 1,
   limit: number = 20,

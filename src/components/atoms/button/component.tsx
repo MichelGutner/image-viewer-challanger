@@ -46,8 +46,6 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: SIZE / 2,
     overflow: 'hidden',
-    elevation: 10,
-    shadowColor: '#000',
     width: SIZE,
     height: SIZE,
     justifyContent: 'center',

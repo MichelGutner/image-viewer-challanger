@@ -3,6 +3,7 @@ import { updateProgress, updateStatus } from '@/store/downloadSlice';
 import { download } from '@kesha-antonov/react-native-background-downloader';
 import { DOWNLOAD_FOLDER } from '@/constants';
 import RNFS from 'react-native-fs';
+import { EDownloadStatus } from '@/types/download';
 
 export const useDownloader = () => {
   const dispatch = useDispatch();
@@ -14,18 +15,18 @@ export const useDownloader = () => {
       destination,
     })
       .begin(() => {
-        dispatch(updateStatus({ id, status: 'downloading' }));
+        dispatch(updateStatus({ id, status: EDownloadStatus.DOWNLOADING }));
       })
       .progress(({ bytesDownloaded, bytesTotal }) => {
         const percent = (bytesDownloaded / bytesTotal) * 100;
         dispatch(updateProgress({ id, progress: percent }));
       })
       .done(() => {
-        dispatch(updateStatus({ id, status: 'completed' }));
+        dispatch(updateStatus({ id, status: EDownloadStatus.COMPLETED }));
         dispatch(updateProgress({ id, progress: 100 }));
       })
       .error(() => {
-        dispatch(updateStatus({ id, status: 'failed' }));
+        dispatch(updateStatus({ id, status: EDownloadStatus.FAILED }));
       });
 
     return task;
@@ -39,7 +40,9 @@ export const useDownloader = () => {
         if (result) {
           return RNFS.unlink(filepath)
             .then(() => {
-              dispatch(updateStatus({ id: filename, status: 'deleted' }));
+              dispatch(
+                updateStatus({ id: filename, status: EDownloadStatus.DELETED }),
+              );
               dispatch(updateProgress({ id: filename, progress: 0 }));
               onSuccess?.();
             })

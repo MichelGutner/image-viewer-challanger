@@ -13,7 +13,7 @@ const unsplashApi = axios.create({
 export const getUnsplashPhotoInfo = async (picsumUrl: string) => {
   try {
     const photoId = extractPhotoIdFromUrl(picsumUrl);
-    if (!photoId) throw new Error('Invalid Picsum URL');
+    if (!photoId) return null;
 
     const { data } = await unsplashApi.get<IUnsplashPhoto>(
       `/photos/${photoId}`,

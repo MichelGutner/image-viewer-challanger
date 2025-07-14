@@ -6,7 +6,7 @@
  */
 
 import { DarkTheme, LightTheme } from '@/global';
-import { AppStack, TabNavigator } from '@/navigation';
+import { AppStack } from '@/navigation';
 import { realmModels } from '@/storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { RealmProvider } from '@realm/react';

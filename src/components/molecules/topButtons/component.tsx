@@ -1,51 +1,25 @@
-import React, { useState, useCallback } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import React from 'react';
 import { Button } from '@/components';
+import { StyleSheet, Text, View } from 'react-native';
+import { getTabConfig } from './helpers';
+import { TabOption, TTopButtonsProps } from './types';
 
-type TabOption = 'remote' | 'offline';
-
-export type TTopButtonsProps = {
-  onPress: (tab: TabOption) => void;
-  remoteCount?: number;
-  offlineCount?: number;
-};
-
-export const TopButtons: React.FC<TTopButtonsProps> = ({
+export const TopButtons = ({
   onPress,
-  remoteCount = 0,
-  offlineCount = 0,
-}) => {
-  const { colors } = useTheme();
-  const [selectedTab, setSelectedTab] = useState<TabOption>('remote');
+  remoteCount,
+  offlineCount,
+}: TTopButtonsProps) => {
+  const handleTabChange = (tab: TabOption) => {
+    onPress?.(tab);
+  };
 
-  const handleTabChange = useCallback(
-    (tab: TabOption) => {
-      setSelectedTab(tab);
-      onPress?.(tab);
-    },
-    [onPress],
-  );
-
-  const tabConfig: {
-    tab: TabOption;
-    icon: string;
-    count: number;
-  }[] = [
-    { tab: 'remote', icon: 'layers', count: remoteCount },
-    { tab: 'offline', icon: 'download-cloud', count: offlineCount },
-  ];
+  const tabConfig = getTabConfig(remoteCount, offlineCount);
 
   return (
     <View style={styles.container}>
       {tabConfig.map(({ tab, icon, count }) => {
-        const isActive = selectedTab === tab;
-        const backgroundColor = isActive
-          ? 'rgba(255,255,255,0.06)'
-          : 'transparent';
-
         return (
-          <View key={tab} style={[styles.tab, { backgroundColor }]}>
+          <View key={tab} style={[styles.tab]}>
             <Button
               containerStyle={{ flex: 1 }}
               style={styles.button}
@@ -83,13 +57,13 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   button: {
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(255,255,255,0)',
   },
   badge: {
     position: 'absolute',
     top: -4,
     right: -4,
-    backgroundColor: '#f43f5e', // rosa-escuro (pode trocar pelo tema)
+    backgroundColor: '#f43f5e',
     borderRadius: 8,
     minWidth: 16,
     height: 16,

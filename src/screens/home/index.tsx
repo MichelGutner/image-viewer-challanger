@@ -1,5 +1,11 @@
-import React, { useState } from 'react';
-import { Button, FooterFloatingView, Text } from '@/components';
+import React, { useEffect, useState } from 'react';
+import {
+  Button,
+  FooterFloatingView,
+  HeaderFloatingView,
+  Text,
+  TopButtons,
+} from '@/components';
 import { fetchRandomImage } from '@/services/picturesService';
 import { Image } from '@/storage/realm';
 import { useNavigation } from '@react-navigation/native';
@@ -11,22 +17,24 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { BackDropImage } from './backDropImage';
-import { ImageItem, imageWidth } from './imageItem';
+import { BackDropImage } from '@/components';
 import { useDownloader } from '@/hooks';
 import { DOWNLOAD_FOLDER } from '@/constants';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store';
 import { UpdateMode } from 'realm';
+import { imageWidth } from '@/constants/dimensions';
+import { ImageItem } from './components';
 
 export const HomeScreen = () => {
   const { startDownload } = useDownloader();
   const { width } = useWindowDimensions();
   const navigation = useNavigation<any>();
   const realm = useRealm();
-  const [isLoading, setIsLoading] = useState(false);
   const imagesData = useQueryRealm(Image);
   const controlsOpacity = useSharedValue(1);
+  const downloadImages = useQueryRealm(Image).filtered(
+    'downloadStatus == $0',
+    'completed',
+  );
 
   const { data: imageData, isLoading: queryLoading } = useQuery({
     queryKey: [`-image`],
@@ -46,10 +54,6 @@ export const HomeScreen = () => {
   const currentIndex = Math.round(scrollX.value);
   const image = imagesData[currentIndex];
 
-  const progress = useSelector(
-    (state: RootState) => state.download.progress[image?.id || ''],
-  );
-
   const gotToPreviousImage = () => {
     if (flatListRef.current) {
       const currentIndex = Math.round(scrollX.value);
@@ -62,7 +66,7 @@ export const HomeScreen = () => {
   };
 
   const handleNavigateToDetails = (image: Image) => {
-    animatedImageScale.value = withTiming(1.5, { duration: 300 });
+    animatedImageScale.value = withTiming(1.5);
     navigation.navigate('Details', {
       image,
       isDownloaded: image.downloadStatus === 'completed',
@@ -71,16 +75,12 @@ export const HomeScreen = () => {
 
   const fetchAndAddImage = async () => {
     try {
-      setIsLoading(true);
       const newImage = await fetchRandomImage();
       realm.write(() => {
         realm.create(Image, Image.createBlank(newImage));
       });
     } catch (error) {
       console.error('Erro ao buscar nova imagem:', error);
-    } finally {
-      setIsLoading(false);
-      realm.deleteAll();
     }
   };
 
@@ -110,8 +110,27 @@ export const HomeScreen = () => {
       });
   };
 
+  useEffect(() => {
+    if (!imagesData.length) {
+      fetchAndAddImage();
+    }
+  }, [imagesData]);
+
   return (
     <View style={styles.container}>
+      <HeaderFloatingView>
+        <View style={{ flex: 1 }} />
+        <TopButtons
+          onPress={tab => {
+            if (tab === 'remote') {
+              navigation.navigate('Gallery');
+            } else {
+              navigation.navigate('OfflineGallery');
+            }
+          }}
+          offlineCount={downloadImages?.length}
+        />
+      </HeaderFloatingView>
       <View style={StyleSheet.absoluteFillObject}>
         {imagesData.map((image, index) => {
           return (

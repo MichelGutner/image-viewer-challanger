@@ -8,6 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { THeaderFloatingViewProps } from './types';
+import { HEADER_GRADIENT_COLORS } from './constants';
 
 export const HeaderFloatingView = ({
   children,
@@ -15,7 +16,7 @@ export const HeaderFloatingView = ({
 }: THeaderFloatingViewProps) => {
   const { top } = useSafeAreaInsets();
 
-  const animatedBottomStyle = useAnimatedStyle(() => ({
+  const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity?.value ?? 1,
   }));
 
@@ -23,10 +24,10 @@ export const HeaderFloatingView = ({
     <Animated.View
       entering={FadeIn}
       exiting={FadeOut}
-      style={[styles.bottomButtons, animatedBottomStyle]}>
+      style={[styles.bottomButtons, animatedStyle]}>
       <LinearGradient
-        style={[styles.linearGradient, { paddingTop: top, padding: 12 }]}
-        colors={['rgba(0, 0, 0, 1)', 'transparent']}>
+        style={[styles.linearGradient, { paddingTop: top + 10 }]}
+        colors={HEADER_GRADIENT_COLORS}>
         {children}
       </LinearGradient>
     </Animated.View>
@@ -45,6 +46,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     flexDirection: 'row',
     gap: 16,
-    justifyContent: 'space-between',
+    padding: 12,
+    alignItems: 'center',
   },
 });

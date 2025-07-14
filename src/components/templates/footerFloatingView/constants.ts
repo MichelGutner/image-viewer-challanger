@@ -1,0 +1,1 @@
+export const FOOTER_GRADIENT_COLORS = ['transparent', 'rgba(0, 0, 0, 0.9)']

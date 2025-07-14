@@ -2,39 +2,38 @@ import { Button, Text } from '@/components';
 import { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated, {
-  FadeInDown,
-  FadeInUp,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { THeaderProps } from './types';
 
-export type THeaderProps = {
-  show: boolean;
-  onPressBack?: () => void;
-};
-
-export const Header = ({ show, onPressBack }: THeaderProps) => {
+export const Header = ({ show, onPressBack, opacity }: THeaderProps) => {
   const { top } = useSafeAreaInsets();
   const translateY = useSharedValue(-100);
-  const opacity = useSharedValue(0);
+  const internalOpacity = useSharedValue(0);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
-    opacity: opacity.value,
-    top: top + 24,
-  }));
+  const animatedStyle = useAnimatedStyle(() => {
+    if (opacity?.value) {
+      internalOpacity.value = opacity.value;
+    }
+    return {
+      transform: [{ translateY: translateY.value }],
+      opacity: internalOpacity.value,
+      top: top + 4,
+    };
+  });
 
   useEffect(() => {
     if (show) {
       translateY.value = 0;
-      opacity.value = withTiming(1);
+      internalOpacity.value = withTiming(1);
     } else {
       translateY.value = withTiming(-100);
-      opacity.value = withTiming(0);
+      internalOpacity.value = withTiming(0);
     }
-  }, [show]);
+  }, [show, opacity?.value]);
 
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
@@ -42,7 +41,6 @@ export const Header = ({ show, onPressBack }: THeaderProps) => {
       <Text style={{ flex: 1, textAlign: 'center' }} type="defaultSemiBold">
         Voltar
       </Text>
-      {/* <Button iconName="ChevronRight" onPress={() => null} /> */}
     </Animated.View>
   );
 };
@@ -51,8 +49,6 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     top: 0,
-    left: 0,
-    right: 0,
     zIndex: 1,
     flexDirection: 'row',
     paddingHorizontal: 16,

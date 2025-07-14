@@ -1,6 +1,7 @@
-import { IImage } from '@/types';
+import { imageHeight, imageWidth } from '@/constants/dimensions';
+import { Image } from '@/storage/realm';
 import React from 'react';
-import { Dimensions, Pressable } from 'react-native';
+import { Pressable } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Animated, {
   Extrapolation,
@@ -8,10 +9,6 @@ import Animated, {
   SharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-
-const { width } = Dimensions.get('screen');
-export const imageWidth = width * 0.8;
-export const imageHeight = width * 1.2;
 
 const AnimatedImage = Animated.createAnimatedComponent(FastImage);
 
@@ -21,10 +18,10 @@ export const ImageItem = ({
   scrollX,
   onPress,
 }: {
-  item: IImage;
+  item: Image;
   index: number;
   scrollX: SharedValue<number>;
-  onPress?: (image: IImage) => void;
+  onPress?: (image: Image) => void;
 }) => {
   const handlePress = () => {
     onPress?.(item);

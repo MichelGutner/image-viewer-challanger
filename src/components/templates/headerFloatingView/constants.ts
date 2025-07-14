@@ -1,0 +1,1 @@
+export const HEADER_GRADIENT_COLORS = ['rgba(0, 0, 0, 1)', 'transparent']

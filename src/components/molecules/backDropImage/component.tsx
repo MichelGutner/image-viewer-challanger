@@ -1,6 +1,5 @@
-import { IImage } from '@/types';
+import { Image } from '@/storage/realm';
 import { StyleSheet } from 'react-native';
-import FastImage from 'react-native-fast-image';
 import Animated, {
   Extrapolation,
   interpolate,
@@ -8,17 +7,17 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 
-const AnimatedImage = Animated.createAnimatedComponent(FastImage);
-
 export const BackDropImage = ({
   image,
   index,
   scrollX,
 }: {
-  image: IImage;
+  image: Image;
   index: number;
   scrollX: SharedValue<number>;
 }) => {
+  const blueRadiusValue = 50;
+
   const animatedStyle = useAnimatedStyle(() => {
     return {
       opacity: interpolate(
@@ -29,11 +28,12 @@ export const BackDropImage = ({
       ),
     };
   });
+
   return (
     <Animated.Image
       style={[StyleSheet.absoluteFillObject, animatedStyle]}
       source={{ uri: image.download_url }}
-      blurRadius={50}
+      blurRadius={blueRadiusValue}
     />
   );
 };
